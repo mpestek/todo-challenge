@@ -1,11 +1,22 @@
-<mat-sidenav-container>
-  <mat-sidenav mode="side" position="end" [opened]="isSidebarOpen">
-    This is where we edit!
+<mat-sidenav-container class="todo-page">
+  <mat-sidenav 
+    position="end" 
+    [opened]="isSidebarOpen"
+    (closed)="closeSidebar()">
     <button mat-button (click)="closeSidebar()">Close</button>
+    <app-todo-item-manage
+      [todoItem]="selectedItem"
+      (save)="saveItem($event)"
+      (cancel)="closeSidebar()"
+    ></app-todo-item-manage>
   </mat-sidenav>
   <mat-sidenav-content>
     <button mat-button (click)="openSidebar()">Add new</button>
     <table mat-table #table [dataSource]="todoItems$ | async">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> Id </th>
+        <td mat-cell *matCellDef="let row"> {{ row.id }} </td>
+      </ng-container>
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef> Name </th>
         <td mat-cell *matCellDef="let row"> {{ row.name }} </td>
@@ -16,11 +27,17 @@
       </ng-container>
       <ng-container matColumnDef="completed">
         <th mat-header-cell *matHeaderCellDef> Completed </th>
-        <td mat-cell *matCellDef="let row"> {{ row.completed }} </td>
+        <td mat-cell *matCellDef="let row">
+          <mat-icon *ngIf="row.completed">check</mat-icon>
+          <mat-icon *ngIf="!row.completed">clear</mat-icon>
+        </td>
       </ng-container>
       <ng-container matColumnDef="favourite">
         <th mat-header-cell *matHeaderCellDef> Favourite </th>
-        <td mat-cell *matCellDef="let row"> {{ row.favourite }} </td>
+        <td mat-cell *matCellDef="let row">
+          <mat-icon *ngIf="row.favourite">check</mat-icon>
+          <mat-icon *ngIf="!row.favourite">clear</mat-icon>
+        </td>
       </ng-container>
       <ng-container matColumnDef="expirationDate">
         <th mat-header-cell *matHeaderCellDef> Expires </th>
@@ -29,12 +46,15 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef> Actions </th>
         <td mat-cell *matCellDef="let row"> 
-          <button mat-button>Edit</button>
-          <button mat-button (click)="deleteItem(row.name)">Delete</button>
+          <button mat-button (click)="editItem(row)">Edit</button>
+          <button mat-button (click)="deleteItem(row.id)">Delete</button>
         </td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: tableColumns"></tr>
+      <tr 
+        mat-row 
+        *matRowDef="let row; columns: tableColumns"
+        [ngClass]="{ 'expired': isExpired(row.expirationDate) }"></tr>
     </table>
   </mat-sidenav-content>
 </mat-sidenav-container>

@@ -1,1 +1,24 @@
-<p>todo-item-manage works!</p>
+<form class="todo-item-form" [formGroup]="todoItemFormGroup">
+  <input matInput hidden formControlName="id">
+  <mat-form-field>
+    <input matInput formControlName="name" placeholder="Name">
+    <mat-error *ngIf="todoItemFormGroup.controls.name.invalid">Required!</mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput formControlName="description" placeholder="Description">
+    <mat-error *ngIf="todoItemFormGroup.controls.description.invalid">Required!</mat-error>
+  </mat-form-field>
+  <mat-checkbox formControlName="completed">Completed</mat-checkbox>
+  <mat-checkbox formControlName="favourite">Favourite</mat-checkbox>
+  <mat-form-field>
+    <mat-label>Expiration date</mat-label>
+    <input matInput formControlName="expirationDate" [matDatepicker]="picker">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+    <mat-error *ngIf="todoItemFormGroup.controls.expirationDate.invalid">Required!</mat-error>
+  </mat-form-field>
+  <div>
+    <button mat-button (click)="saveItem()">Save</button>
+    <button mat-button (click)="cancelChanged()">Cancel</button>
+  </div>
+</form>

@@ -23,6 +23,7 @@ export class TodoComponent implements OnInit {
   ];
 
   isSidebarOpen = false;
+  selectedItem: TodoItem = null;
 
   constructor(
     private todoService: TodoService,
@@ -33,6 +34,7 @@ export class TodoComponent implements OnInit {
   }
 
   openSidebar(): void {
+    this.selectedItem = null;
     this.isSidebarOpen = true;
   }
   
@@ -40,9 +42,24 @@ export class TodoComponent implements OnInit {
     this.isSidebarOpen = false;
   }
 
-  deleteItem(name: string) {
-    // I assumed name is unique, not to introduce ID at this point
+  saveItem(item: TodoItem) {
+    if (this.selectedItem) {
+      this.todoService.edit(item);
+    } else {
+      this.todoService.create(item);
+    }
 
+    this.isSidebarOpen = false;
+  }
+
+  editItem(item: TodoItem): void {
+    if (item) {
+      this.selectedItem = item;
+      this.isSidebarOpen = true;
+    }
+  }
+
+  deleteItem(id: number) {
     let dialogRef = this.dialog.open(RemoveItemConfirmationDialogComponent, {
       'width': '350px',
       'height': '160px'
@@ -50,8 +67,12 @@ export class TodoComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((shouldRemove: boolean) => {
       if (shouldRemove) {
-        this.todoService.delete(name);
+        this.todoService.delete(id);
       }
     });
+  }
+
+  isExpired(expirationDate: Date) {
+    return Date.now() > expirationDate.getTime();
   }
 }

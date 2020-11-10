@@ -1,0 +1,6 @@
+.todo-item-form {
+  display: flex;
+  flex-flow: column;
+  padding-left: 50px;
+  padding-right: 50px;
+}
