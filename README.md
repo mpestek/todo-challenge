@@ -1,6 +1,7 @@
 # Todo
 
 This simple Todo App was a challenge done in 2 and a half hours.
+The app was written in Angular. Angular Material was used for most elements.
 
 ## Requirements:
 1. User can view all todos in a list.
